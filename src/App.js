@@ -1,20 +1,49 @@
 // File: App.js
 
 import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./LoginPage";
+import EmbedPage from "./EmbedPage";
+import MainMenu from "./MainMenu";
 
 const App = () => {
-  const supersetUrl = "http://localhost:8088/superset/welcome/"; // Ganti dengan URL dashboard Superset Anda
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "20px" }}>
-      <h1>Embed Apache Superset</h1>
-      <iframe
-        src={supersetUrl}
-        title="Apache Superset Dashboard"
-        style={{ width: "100%", height: "80vh", border: "none" }}
-        allowFullScreen
-      ></iframe>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/main-menu" />
+            ) : (
+              <LoginPage setIsAuthenticated={setIsAuthenticated} />
+            )
+          }
+        />
+        <Route
+          path="/main-menu"
+          element={
+            isAuthenticated ? (
+              <MainMenu />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/embed"
+          element={
+            isAuthenticated ? (
+              <EmbedPage />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+      </Routes>
+    </Router>
   );
 };
 
